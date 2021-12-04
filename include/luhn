@@ -1,0 +1,28 @@
+/* vim: set filetype=cpp: */
+#ifndef TREGANA_LUHN
+#define TREGANA_LUHN
+#include <vector>
+#include <cstdlib>
+namespace tregana {
+
+template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
+int luhn_value(const std::vector<T>&v)
+{
+  int sum{0};
+  for (auto it{v.rbegin()}; it < v.rend(); it += 2)
+  {
+    const auto c{std::div(*it * 2, 10)};
+    sum += c.quot;
+    sum += c.rem;
+  }
+  for (auto it{v.rbegin()+1}; it < v.rend(); it += 2)
+  {
+    const auto c{std::div(*it, 10)};
+    sum += c.quot;
+    sum += c.rem;
+  }
+  return 10 - sum % 10;
+}
+
+}//namespace tregana
+#endif//TREGANA_LUHN
