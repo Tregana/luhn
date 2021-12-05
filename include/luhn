@@ -3,7 +3,27 @@
 #define TREGANA_LUHN
 #include <vector>
 #include <cstdlib>
+#include <string>
+#include <memory>
 namespace tregana {
+enum class check: bool { off, on };
+
+template<check C>
+std::optional<std::vector<int>> luhn_stv(const std::string&s)
+{
+  if constexpr (C == tregana::check::on)
+  {
+    for (auto c{s.begin()}; c != s.end(); ++c)
+    {
+      if (*c < '0'  or '9' < *c)
+        return std::nullopt;
+    }
+  }
+  std::vector<int> r;
+  r.reserve(s.size());
+  std::transform(s.begin(), s.end(), std::back_inserter(r), [](char a){return a -'0';}); 
+  return r;
+}
 
 template<typename T, std::enable_if_t<std::is_integral<T>::value, bool> = true>
 int luhn_value(const std::vector<T>&v)
